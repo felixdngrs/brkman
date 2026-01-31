@@ -23,7 +23,7 @@
  *        The returned memory is not initialized.
  *        The pointer must be released using brkman_free().
  */
-void *brkman_alloc(size_t size);
+void *brkman_alloc(size_t size) __attribute__((warn_unused_result));
 
 /**
  * @brief Resize a previously allocated memory block.
@@ -47,7 +47,7 @@ void *brkman_alloc(size_t size);
  * @note
  *        On failure, the original memory block is left unchanged.
  */
-void *brkman_realloc(void *_NULLABLE ptr, size_t size);
+void *brkman_realloc(void * ptr, size_t size) __attribute__((warn_unused_result));
 
 /**
  * @brief Allocate zero-initialized memory for an array.
@@ -71,7 +71,7 @@ void *brkman_realloc(void *_NULLABLE ptr, size_t size);
  * @note
  *        The returned memory must be released using brkman_free().
  */
-void *brkman_calloc(size_t nmemb, size_t size);
+void *brkman_calloc(size_t nmemb, size_t size) __attribute__((warn_unused_result));
 
 /**
  * @brief Free a previously allocated memory block.
@@ -84,6 +84,6 @@ void *brkman_calloc(size_t nmemb, size_t size);
  *        Pointer to memory previously returned by brkman_alloc(),
  *        brkman_calloc(), or brkman_realloc(), or NULL.
  */
-void brkman_free(void *_NULLABLE ptr);
+void brkman_free(void * ptr) __attribute__((warn_unused_result));
 
 #endif

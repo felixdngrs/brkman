@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <stdalign.h>
 #include "attributes.h"
+#include "heap.h"
 
 #define BRKMAN_ALIGNOF(type)        (offsetof(struct {uint8_t c; type m;}, m))
 #define BRKMAN_HEAP_EXT_SIZE        (64 * 1024)
@@ -20,7 +21,7 @@
 /**
  * @brief Extends the heap by a predefined increment.
  *
- * This function increases the @p top_chunk of the heap to provide additional 
+ * This function increases the top chunk of the heap to provide additional 
  * memory space for future allocations. The expansion always occurs by a 
  * fixed, globally defined value.
  *
@@ -31,7 +32,7 @@
  * @return false If the extension failed (e.g., due to the operating system 
  * or lack of memory).
  */
-bool heap_extend(brkman_heap_t *_NONULL heap);
+bool heap_extend(void) __attribute__((warn_unused_result));
 
 /**
  * @brief Attempts to split the top chunk of the heap to satisfy an allocation request.
@@ -42,14 +43,13 @@ bool heap_extend(brkman_heap_t *_NONULL heap);
  * If the remaining space after splitting would be too small to be usable, the entire top chunk
  * is allocated without splitting.
  *
- * @param heap Pointer to the heap structure containing the top chunk.
  * @param msize Size (in bytes) of the chunk to allocate. Must be a multiple of the alignment requirement.
  *
  * @return true if the top chunk was successfully split or allocated,
  *         false if the top chunk is too small to satisfy the request.
  *
  */
-bool brkman_split_top_chunk(brkman_heap_t *heap, size_t msize);
+bool brkman_split_top_chunk(size_t msize) __attribute__((warn_unused_result));
 
 /**
  * @brief Merges two adjacent free chunks into a single larger chunk.
@@ -84,5 +84,5 @@ bool brkman_split_top_chunk(brkman_heap_t *heap, size_t msize);
  * - The returned chunk represents the combined memory of both input chunks.
  * - @p chunk2 must not be accessed after the call.
  */
-brkman_chunk_t *brkman_merge_chunks(brkman_chunk_t *_NONULL restrict chunk1, brkman_chunk_t *_NONULL restrict chunk2);
+brkman_chunk_t *brkman_merge_chunks(brkman_chunk_t * restrict chunk1, brkman_chunk_t * restrict chunk2) __attribute__((warn_unused_result));
 #endif

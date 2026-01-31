@@ -2,12 +2,13 @@
 #define _HEAP_H_
 
 #include <stddef.h>
-#include "mem.h"
+#include <stdbool.h>
+#include "attributes.h"
 
 typedef struct brkman_chunk_t {
     size_t size;
-    brkman_chunk_t *next;
-    brkman_chunk_t *prev;
+    struct brkman_chunk_t *next;
+    struct brkman_chunk_t *prev;
 } brkman_chunk_t;
 
 typedef struct brkman_heap_t {
@@ -17,7 +18,10 @@ typedef struct brkman_heap_t {
     brkman_chunk_t *free;
 } brkman_heap_t;
 
-brkman_chunk_t *brkman_detach_chunk(brkman_chunk_t *chunk);
-bool brkman_insert_chunk(brkman_chunk_t *_NONULL newchunk, brkman_chunk_t *_NONULL lchunk, brkman_chunk_t *_NULLABLE rchunk);
+brkman_chunk_t *brkman_detach_chunk(brkman_chunk_t *chunk) __attribute__((warn_unused_result));
+bool brkman_insert_chunk(brkman_chunk_t * newchunk, brkman_chunk_t * lchunk, brkman_chunk_t * rchunk) __attribute__((warn_unused_result));
+void brkman_inc_top_chunk(size_t val);
+void brkman_dec_top_chunk(size_t val);
+void brkman_set_program_break(const void * const nbrk);
 
 #endif
