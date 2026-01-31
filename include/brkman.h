@@ -1,7 +1,11 @@
+#ifndef _BRKMAN_H_
+#define _BRKMAN_H_
+
 #include <stddef.h>
 #include <stdbool.h>
 
 #include "attributes.h"
+#include "mem.h"
 
 /**
  * @brief Allocate a block of memory.
@@ -81,3 +85,5 @@ void *brkman_calloc(size_t nmemb, size_t size);
  *        brkman_calloc(), or brkman_realloc(), or NULL.
  */
 void brkman_free(void *_NULLABLE ptr);
+
+#endif

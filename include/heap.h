@@ -1,3 +1,6 @@
+#ifndef _HEAP_H_
+#define _HEAP_H_
+
 #include <stddef.h>
 #include "mem.h"
 
@@ -16,3 +19,5 @@ typedef struct brkman_heap_t {
 
 brkman_chunk_t *brkman_detach_chunk(brkman_chunk_t *chunk);
 bool brkman_insert_chunk(brkman_chunk_t *_NONULL newchunk, brkman_chunk_t *_NONULL lchunk, brkman_chunk_t *_NULLABLE rchunk);
+
+#endif

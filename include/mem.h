@@ -1,3 +1,6 @@
+#ifndef _MEM_H_
+#define _MEM_H_
+
 #include <stddef.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -82,3 +85,4 @@ bool brkman_split_top_chunk(brkman_heap_t *heap, size_t msize);
  * - @p chunk2 must not be accessed after the call.
  */
 brkman_chunk_t *brkman_merge_chunks(brkman_chunk_t *_NONULL restrict chunk1, brkman_chunk_t *_NONULL restrict chunk2);
+#endif
