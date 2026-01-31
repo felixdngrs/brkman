@@ -1,0 +1,60 @@
+BasedOnStyle: LLVM          # Start from the LLVM coding style as a base
+
+IndentWidth: 4              # Number of spaces per indentation level
+TabWidth: 4                 # Number of spaces per tab character
+UseTab: Never               # Never use tab characters for indentation
+
+BreakBeforeBraces: Allman   # Place opening braces on a new line
+# Example:
+# void foo()
+# {
+#     bar();
+# }
+
+PointerAlignment: Left      # Place pointer '*' on the left with the type
+# Example: int* ptr;
+
+DerivePointerAlignment: false  # Don't automatically adjust pointer alignment from code style
+
+ColumnLimit: 80            # Maximum line length before wrapping
+
+AllowShortIfStatementsOnASingleLine: false  # Don't put short if statements on one line
+# Example (not allowed):
+# if (x) foo();
+
+AllowShortFunctionsOnASingleLine: false     # Don't put short functions on one line
+# Example (not allowed):
+# void f() { doSomething(); }
+
+SpacesBeforeTrailingComments: 1  # Number of spaces before a trailing comment
+# Example: int x; // comment
+
+SpaceAfterCStyleCast: true        # Add a space after C-style casts
+# Example: int y = (int) x;
+
+IndentCaseLabels: true             # Indent `case` labels inside `switch` statements
+# Example:
+# switch(x)
+# {
+#     case 1:
+#         foo();
+# }
+
+AlignAfterOpenBracket: Align       # Align parameters vertically after an open bracket
+# Example:
+# func(a,
+#      b,
+#      c);
+
+AllowAllParametersOfDeclarationOnNextLine: false  # Don't allow all parameters to move to next line
+
+AllowShortLoopsOnASingleLine: false  # Don't put short loops on one line
+# Example (not allowed):
+# for(int i=0;i<n;i++) foo();
+
+IndentWrappedFunctionNames: false   # Don't indent function names that wrap to the next line
+
+BinPackParameters: false            # Don't pack multiple parameters on the same line
+
+SpacesInParentheses: false          # Don't put spaces inside parentheses
+# Example: foo(x, y);  // not foo( x, y );
