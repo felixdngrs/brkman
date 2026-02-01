@@ -84,6 +84,6 @@ void *brkman_calloc(size_t nmemb, size_t size) __attribute__((warn_unused_result
  *        Pointer to memory previously returned by brkman_alloc(),
  *        brkman_calloc(), or brkman_realloc(), or NULL.
  */
-void brkman_free(void * ptr) __attribute__((warn_unused_result));
+void brkman_free(void * ptr);
 
 #endif
