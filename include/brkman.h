@@ -1,8 +1,8 @@
 #ifndef _BRKMAN_H_
 #define _BRKMAN_H_
 
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 #include "attributes.h"
 #include "mem.h"
@@ -23,7 +23,7 @@
  *        The returned memory is not initialized.
  *        The pointer must be released using brkman_free().
  */
-void *brkman_alloc(size_t size) __attribute__((warn_unused_result));
+void* brkman_alloc(size_t size) __attribute__((warn_unused_result));
 
 /**
  * @brief Resize a previously allocated memory block.
@@ -47,7 +47,8 @@ void *brkman_alloc(size_t size) __attribute__((warn_unused_result));
  * @note
  *        On failure, the original memory block is left unchanged.
  */
-void *brkman_realloc(void * ptr, size_t size) __attribute__((warn_unused_result));
+void* brkman_realloc(void* ptr, size_t size)
+    __attribute__((warn_unused_result));
 
 /**
  * @brief Allocate zero-initialized memory for an array.
@@ -71,7 +72,8 @@ void *brkman_realloc(void * ptr, size_t size) __attribute__((warn_unused_result)
  * @note
  *        The returned memory must be released using brkman_free().
  */
-void *brkman_calloc(size_t nmemb, size_t size) __attribute__((warn_unused_result));
+void* brkman_calloc(size_t nmemb, size_t size)
+    __attribute__((warn_unused_result));
 
 /**
  * @brief Free a previously allocated memory block.
@@ -84,6 +86,6 @@ void *brkman_calloc(size_t nmemb, size_t size) __attribute__((warn_unused_result
  *        Pointer to memory previously returned by brkman_alloc(),
  *        brkman_calloc(), or brkman_realloc(), or NULL.
  */
-void brkman_free(void * ptr);
+void brkman_free(void* ptr);
 
 #endif
