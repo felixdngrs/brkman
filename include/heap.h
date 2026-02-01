@@ -28,6 +28,6 @@ bool brkman_insert_chunk(brkman_chunk_t* newchunk,
     __attribute__((warn_unused_result));
 void brkman_inc_top_chunk(size_t val);
 void brkman_dec_top_chunk(size_t val);
-void brkman_set_program_break(const void* const nbrk);
+void brkman_set_program_break(void* const nbrk);
 
 #endif
