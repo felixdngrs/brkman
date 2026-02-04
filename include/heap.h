@@ -15,16 +15,19 @@ typedef struct brkman_chunk_t
 typedef struct brkman_heap_t
 {
     void* program_break;
+    size_t used_chunks_num;
+    size_t free_chunks_num;
     brkman_chunk_t* top_chunk;
     brkman_chunk_t* used;
     brkman_chunk_t* free;
 } brkman_heap_t;
 
+ptrdiff_t brkman_cmp_chunks(const brkman_chunk_t* const a,
+                            const brkman_chunk_t* const b)
+    __attribute__((warn_unused_result));
 brkman_chunk_t* brkman_detach_chunk(brkman_chunk_t* chunk)
     __attribute__((warn_unused_result));
-bool brkman_insert_chunk(brkman_chunk_t* newchunk,
-                         brkman_chunk_t* lchunk,
-                         brkman_chunk_t* rchunk)
+bool brkman_chunk_make_free(brkman_chunk_t* newchunk)
     __attribute__((warn_unused_result));
 void brkman_inc_top_chunk(size_t val);
 void brkman_dec_top_chunk(size_t val);
