@@ -114,6 +114,31 @@ bool brkman_chunk_mark_free(brkman_chunk_t* newchunk)
 
     return false;
 }
+
+brkman_chunk_t* brkman_search_free(size_t minsize)
+{
+    brkman_chunk_t* next_fit = NULL;
+    for (brkman_chunk_t* current = _heap.free; current != NULL;
+         current = current->next)
+    {
+        if (current->size == minsize)
+        {
+            next_fit = current;
+            break;
+        }
+        if (current->size > minsize)
+        {
+            bool current_has_better_fit =
+                next_fit && (next_fit->size > current->size);
+            if (!next_fit || current_has_better_fit)
+            {
+                next_fit = current;
+            }
+        }
+    }
+    return next_fit;
+}
+
 void brkman_inc_top_chunk(size_t val)
 {
     _heap.top_chunk->size += val;
