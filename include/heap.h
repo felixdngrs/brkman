@@ -18,7 +18,6 @@ typedef struct brkman_heap_t
     size_t used_chunks_num;
     size_t free_chunks_num;
     brkman_chunk_t* top_chunk;
-    brkman_chunk_t* used;
     brkman_chunk_t* free;
 } brkman_heap_t;
 

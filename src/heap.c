@@ -9,13 +9,42 @@ ptrdiff_t brkman_cmp_chunks(const brkman_chunk_t* const a,
     return chunk_diff;
 }
 
-brkman_chunk_t* brkman_detach_chunk(brkman_chunk_t* chunk)
+bool brkman_reclaim_chunk(brkman_chunk_t* chunk)
 {
-    UNUSED(chunk);
-    return NULL;
+    if (!chunk)
+    {
+        return false;
+    }
+    if (chunk->next && chunk->prev)
+    {
+        chunk->prev->next = chunk->next;
+        chunk->next->prev = chunk->prev;
+        chunk->next = NULL;
+        chunk->prev = NULL;
+        _heap.free_chunks_num--;
+    }
+    else if (chunk->next && !chunk->prev)
+    {
+        _heap.free = chunk->next;
+        _heap.free->prev = NULL;
+        chunk->next = NULL;
+        _heap.free_chunks_num--;
+    }
+    else if (!chunk->next && chunk->prev)
+    {
+        chunk->prev->next = NULL;
+        chunk->prev = NULL;
+        _heap.free_chunks_num--;
+    }
+    else if (!chunk->next && !chunk->prev)
+    {
+        _heap.free_chunks_num = 0;
+        _heap.free = NULL;
+    }
+    return true;
 }
 
-bool brkman_chunk_make_free(brkman_chunk_t* newchunk)
+bool brkman_chunk_mark_free(brkman_chunk_t* newchunk)
 {
     brkman_chunk_t** free_head = &_heap.free;
 
