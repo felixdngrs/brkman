@@ -44,24 +44,26 @@
 bool heap_extend(void) __attribute__((warn_unused_result));
 
 /**
- * @brief Attempts to split the top chunk of the heap to satisfy an allocation
- * request.
+ * @brief Splits a free memory chunk into two parts if possible.
  *
- * This function checks if the top chunk of the heap can be split to provide a
- * chunk of size `msize`. If the top chunk is large enough, it will be split
- * into two parts: one chunk of size `msize` (marked as allocated) and a new top
- * chunk with the remaining space. If the remaining space after splitting would
- * be too small to be usable, the entire top chunk is allocated without
- * splitting.
+ * This function attempts to split the given chunk so that a new chunk of size
+ * `msize` can be returned. The split is performed from the end of the chunk.
+ * If the remaining size would be too small to be usable (less than
+ * BRKMAN_MIN_CHUNK_SIZE), the original chunk is returned unmodified.
  *
- * @param msize Size (in bytes) of the chunk to allocate. Must be a multiple of
- * the alignment requirement.
+ * @param chunk Pointer to the chunk to split. Must not be NULL.
+ * @param msize Size in bytes of the chunk to allocate. Must include the header
+ *              and be aligned according to BRKMAN_ALIGN_UP.
  *
- * @return true if the top chunk was successfully split or allocated,
- *         false if the top chunk is too small to satisfy the request.
+ * @return Pointer to the newly created chunk of size `msize`, or
+ *         the original chunk if splitting is not possible.
  *
+ * @note Both the original and new chunks must be free. The function updates
+ *       the free list for the new chunk by calling brkman_chunk_make_free().
+ * @note The function assumes that all chunk sizes are already properly aligned.
  */
-bool brkman_split_top_chunk(size_t msize) __attribute__((warn_unused_result));
+brkman_chunk_t* brkman_split_chunk(brkman_chunk_t* chunk, size_t msize)
+    __attribute__((warn_unused_result));
 
 /**
  * @brief Merges two adjacent free chunks into a single larger chunk.
