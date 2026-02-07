@@ -151,3 +151,30 @@ void brkman_set_program_break(void* const nbrk)
 {
     _heap.program_break = nbrk;
 }
+
+
+brkman_chunk_t* brkman_merge_chunks(brkman_chunk_t* restrict chunk1,
+                                    brkman_chunk_t* restrict chunk2)
+{
+    if (!chunk1 || !chunk2)
+    {
+        return NULL;
+    }
+
+    /* verify that the chunks are adjacent in memory */
+    char* addr_after_ch1 = (char*) chunk1 + chunk1->size;
+    if (addr_after_ch1 != (char*) chunk2)
+    {
+        return NULL;
+    }
+
+    chunk1->next = chunk2->next;
+
+    if (chunk1->next)
+    {
+        chunk1->next->prev = chunk1;
+    }
+
+    chunk1->size += chunk2->size;
+    return chunk1;
+}
