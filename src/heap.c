@@ -152,6 +152,42 @@ void brkman_set_program_break(void* const nbrk)
     _heap.program_break = nbrk;
 }
 
+brkman_chunk_t* brkman_split_chunk(brkman_chunk_t* chunk, size_t msize)
+{
+    if (!chunk)
+    {
+        return NULL;
+    }
+
+    /* Is the chunk too small for the request? */
+    if (msize > chunk->size)
+    {
+        return NULL;
+    }
+
+    size_t remaining_size = chunk->size - msize;
+
+    /* If the remaining size is too small to be useful, return the original chunk. */
+    if (remaining_size < BRKMAN_MIN_CHUNK_SIZE)
+    {
+        return chunk;
+    }
+
+    /* Calculate where to split the chunk */
+    char* chunk_end = (char*) chunk + (chunk->size);
+    char* break_chunk_at = chunk_end - msize;
+    brkman_chunk_t* new_chunk = (brkman_chunk_t*) break_chunk_at;
+
+    /* Adjust the sizes of the chunks */
+    chunk->size -= msize;
+    new_chunk->size = msize;
+
+    /* Update the free list after splitting the chunk */
+    brkman_chunk_make_free(new_chunk);
+
+    return new_chunk;
+}
+
 
 brkman_chunk_t* brkman_merge_chunks(brkman_chunk_t* restrict chunk1,
                                     brkman_chunk_t* restrict chunk2)
