@@ -15,8 +15,7 @@ typedef struct brkman_chunk_t
 typedef struct brkman_heap_t
 {
     void* program_break;
-    size_t used_chunks_num;
-    size_t free_chunks_num;
+    size_t free_mem_bytes;
     brkman_chunk_t* top_chunk;
     brkman_chunk_t* free;
 } brkman_heap_t;
@@ -106,4 +105,18 @@ brkman_chunk_t* brkman_split_chunk(brkman_chunk_t* chunk, size_t msize)
  */
 brkman_chunk_t* brkman_merge_chunks(brkman_chunk_t* restrict chunk1,
                                     brkman_chunk_t* restrict chunk2);
+
+/**
+ * @brief Returns the total free heap memory in bytes.
+ *
+ * This function reports the raw amount of free memory currently available
+ * in the heap. The returned value includes all allocator metadata, such as
+ * chunk headers, and therefore does not represent the amount of memory
+ * that can necessarily be allocated by the user.
+ *
+ * @return Total free heap memory in bytes, including allocator overhead.
+ */
+size_t brkman_get_free_bytes();
+
+
 #endif
