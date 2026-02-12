@@ -118,5 +118,20 @@ brkman_chunk_t* brkman_merge_chunks(brkman_chunk_t* restrict chunk1,
  */
 size_t brkman_get_free_bytes();
 
+/**
+ * @brief Searches the free list for a chunk of memory that can satisfy a
+ * request.
+ *
+ * This function implements a "next-fit" search strategy to find a free
+ * memory chunk that is at least as large as the requested size. If an exact
+ * match is found, it is returned immediately. Otherwise, the smallest
+ * suitable chunk is selected.
+ *
+ * @param minsize The minimum size (in bytes) of the chunk to search for.
+ * @return brkman_chunk_t* A pointer to the first suitable free chunk, or
+ * NULL if none is found.
+ */
+brkman_chunk_t* brkman_search_free(size_t minsize)
+    __attribute__((warn_unused_result));
 
 #endif
