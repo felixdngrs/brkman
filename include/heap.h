@@ -25,7 +25,7 @@ ptrdiff_t brkman_cmp_chunks(const brkman_chunk_t* const a,
     __attribute__((warn_unused_result));
 brkman_chunk_t* brkman_detach_chunk(brkman_chunk_t* chunk)
     __attribute__((warn_unused_result));
-bool brkman_chunk_make_free(brkman_chunk_t* newchunk)
+bool brkman_chunk_mark_free(brkman_chunk_t* newchunk)
     __attribute__((warn_unused_result));
 /**
  * @brief Increases the size of the current top heap chunk.
@@ -75,7 +75,7 @@ void brkman_set_program_break(void* const nbrk);
  *         the original chunk if splitting is not possible.
  *
  * @note Both the original and new chunks must be free. The function updates
- *       the free list for the new chunk by calling brkman_chunk_make_free().
+ *       the free list for the new chunk by calling brkman_chunk_mark_free().
  * @note The function assumes that all chunk sizes are already properly aligned.
  */
 brkman_chunk_t* brkman_split_chunk(brkman_chunk_t* chunk, size_t msize)

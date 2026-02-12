@@ -188,11 +188,19 @@ brkman_chunk_t* brkman_split_chunk(brkman_chunk_t* chunk, size_t msize)
     new_chunk->size = msize;
 
     /* Update the free list after splitting the chunk */
-    brkman_chunk_make_free(new_chunk);
+    if (!brkman_chunk_mark_free(new_chunk))
+    {
+        /* in this case, we successfully splitted one chunk but weren't able to
+         * update the free list somehow. We cannot return the new chunk here
+         * because it's not marked as free. We have a strange and inconsistent
+         * state here. We'll simply return NULL for now. Actually we have to
+         * deal with this error more cleanly. */
+        /* TODO: heap.c ; handle brkman_chunk_mark_free error in
+         * brkman_split_chunk */
+    }
 
     return new_chunk;
 }
-
 
 brkman_chunk_t* brkman_merge_chunks(brkman_chunk_t* restrict chunk1,
                                     brkman_chunk_t* restrict chunk2)
