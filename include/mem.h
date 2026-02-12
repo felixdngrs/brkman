@@ -43,4 +43,7 @@
  */
 bool heap_extend(void) __attribute__((warn_unused_result));
 
+brkman_chunk_t* brkman_mem_alloc(size_t membytes)
+    __attribute__((warn_unused_result));
+
 #endif
