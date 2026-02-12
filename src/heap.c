@@ -26,24 +26,24 @@ bool brkman_reclaim_chunk(brkman_chunk_t* chunk)
         chunk->next->prev = chunk->prev;
         chunk->next = NULL;
         chunk->prev = NULL;
-        _heap.free_chunks_num--;
+        _heap.free_mem_bytes -= chunk->size;
     }
     else if (chunk->next && !chunk->prev)
     {
         _heap.free = chunk->next;
         _heap.free->prev = NULL;
         chunk->next = NULL;
-        _heap.free_chunks_num--;
+        _heap.free_mem_bytes -= chunk->size;
     }
     else if (!chunk->next && chunk->prev)
     {
         chunk->prev->next = NULL;
         chunk->prev = NULL;
-        _heap.free_chunks_num--;
+        _heap.free_mem_bytes -= chunk->size;
     }
     else if (!chunk->next && !chunk->prev)
     {
-        _heap.free_chunks_num = 0;
+        _heap.free_mem_bytes = 0;
         _heap.free = NULL;
     }
     return true;
@@ -58,12 +58,12 @@ bool brkman_chunk_mark_free(brkman_chunk_t* newchunk)
         return false;
     }
 
-    if (0 == _heap.free_chunks_num)
+    if (0 == _heap.free_mem_bytes)
     {
         *free_head = newchunk;
         newchunk->next = NULL;
         newchunk->prev = NULL;
-        _heap.free_chunks_num++;
+        _heap.free_mem_bytes += newchunk->size;
         return true;
     }
 
@@ -93,7 +93,7 @@ bool brkman_chunk_mark_free(brkman_chunk_t* newchunk)
                 *free_head = newchunk;
             }
 
-            _heap.free_chunks_num++;
+            _heap.free_mem_bytes += newchunk->size;
             return true;
         }
 
@@ -110,7 +110,7 @@ bool brkman_chunk_mark_free(brkman_chunk_t* newchunk)
             current_chunk->next = newchunk;
             newchunk->prev = current_chunk;
             newchunk->next = NULL;
-            _heap.free_chunks_num++;
+            _heap.free_mem_bytes += newchunk->size;
             return true;
         }
 
@@ -172,7 +172,8 @@ brkman_chunk_t* brkman_split_chunk(brkman_chunk_t* chunk, size_t msize)
 
     size_t remaining_size = chunk->size - msize;
 
-    /* If the remaining size is too small to be useful, return the original chunk. */
+    /* If the remaining size is too small to be useful, return the original
+     * chunk. */
     if (remaining_size < BRKMAN_MIN_CHUNK_SIZE)
     {
         return chunk;
