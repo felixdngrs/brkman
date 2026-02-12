@@ -9,6 +9,11 @@ ptrdiff_t brkman_cmp_chunks(const brkman_chunk_t* const a,
     return chunk_diff;
 }
 
+size_t brkman_get_free_bytes()
+{
+    return _heap.free_mem_bytes;
+}
+
 bool brkman_reclaim_chunk(brkman_chunk_t* chunk)
 {
     if (!chunk)
