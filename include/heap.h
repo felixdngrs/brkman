@@ -16,7 +16,6 @@ typedef struct brkman_heap_t
 {
     void* program_break;
     size_t free_mem_bytes;
-    brkman_chunk_t* top_chunk;
     brkman_chunk_t* free;
 } brkman_heap_t;
 
@@ -27,26 +26,6 @@ brkman_chunk_t* brkman_detach_chunk(brkman_chunk_t* chunk)
     __attribute__((warn_unused_result));
 bool brkman_chunk_mark_free(brkman_chunk_t* newchunk)
     __attribute__((warn_unused_result));
-/**
- * @brief Increases the size of the current top heap chunk.
- *
- * This function adds the given value to the size of the heap's top chunk.
- * It assumes that the top chunk is valid and that the resulting size
- * remains within allowed bounds.
- *
- * @param val Number of bytes to add to the top chunk size.
- */
-void brkman_inc_top_chunk(size_t val);
-/**
- * @brief Decreases the size of the current top heap chunk.
- *
- * This function subtracts the given value from the size of the heap's
- * top chunk. The caller is responsible for ensuring that the size does
- * not underflow.
- *
- * @param val Number of bytes to subtract from the top chunk size.
- */
-void brkman_dec_top_chunk(size_t val);
 
 /**
  * @brief Sets the program break pointer used by the heap manager.

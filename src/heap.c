@@ -1,4 +1,5 @@
 #include "heap.h"
+#include <stdio.h>
 
 static brkman_heap_t _heap;
 
@@ -141,17 +142,14 @@ brkman_chunk_t* brkman_search_free(size_t minsize)
             }
         }
     }
-    return next_fit;
+
+    /* after requesting the next available chunk we try to split it, so it fits
+     * better */
+    brkman_chunk_t* ret_chunk = brkman_split_chunk(next_fit, minsize);
+
+    return ret_chunk;
 }
 
-void brkman_inc_top_chunk(size_t val)
-{
-    _heap.top_chunk->size += val;
-}
-void brkman_dec_top_chunk(size_t val)
-{
-    _heap.top_chunk->size -= val;
-}
 void brkman_set_program_break(void* const nbrk)
 {
     _heap.program_break = nbrk;
@@ -167,7 +165,7 @@ brkman_chunk_t* brkman_split_chunk(brkman_chunk_t* chunk, size_t msize)
     /* Is the chunk too small for the request? */
     if (msize > chunk->size)
     {
-        return NULL;
+        return chunk;
     }
 
     size_t remaining_size = chunk->size - msize;

@@ -1,6 +1,7 @@
 #include "mem.h"
 #include "attributes.h"
 #include "heap.h"
+#include <stdio.h>
 
 bool heap_extend()
 {
@@ -11,8 +12,31 @@ bool heap_extend()
     }
     void* const new_program_break =
         (unsigned char*) old_break + BRKMAN_HEAP_EXT_SIZE;
+
+    /* create a new chunk from the extended heap block */
+    brkman_chunk_t* new_chunk =
+        (brkman_chunk_t*) ((char*) new_program_break - BRKMAN_HEAP_EXT_SIZE);
+
+    new_chunk->size = BRKMAN_HEAP_EXT_SIZE - BRKMAN_CHUNK_HEADER_SIZE;
+
+    if (!brkman_chunk_mark_free(new_chunk))
+    {
+        /* in case of an error inserting the new chunk to the free list, we
+         * release the allocated memory immediately*/
+        void* rollback_res = sbrk((intptr_t) BRKMAN_HEAP_EXT_SIZE);
+        if ((void*) -1 == rollback_res)
+        {
+            /* by now at the latest, we have a fatal error */
+            /* TODO: mem.c ; handle fatal error somehow (that applies to the
+             * entire project) */
+        }
+        return false;
+    }
+
+    /* TODO: mem.c ; merge chunks in heap_extend() (all chunks or at least the
+     * last two) */
+
     brkman_set_program_break(new_program_break);
-    brkman_inc_top_chunk(BRKMAN_HEAP_EXT_SIZE);
 
     return true;
 }
@@ -46,11 +70,7 @@ brkman_chunk_t* brkman_mem_alloc(size_t membytes)
             return NULL;
         }
     }
-    else
-    {
-        /* sufficient memory left - ask for an appropriate chunk */
-        ret_chunk = brkman_search_free(membytes);
-    }
 
+    ret_chunk = brkman_search_free(membytes);
     return ret_chunk;
 }

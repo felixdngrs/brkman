@@ -2,15 +2,9 @@
 
 void* brkman_alloc(size_t size)
 {
-    // the allocated memory block has to be aligned properly
-    if (!BRKMAN_IS_ALIGNED(size))
-    {
-        size = BRKMAN_ALIGN_UP(size);
-    }
-
-    // TODO: alloc logic here
-
-    return NULL;
+    /* TEST! we will return the full chunk for now (with header) */
+    brkman_chunk_t* ret_chunk = brkman_mem_alloc(size);
+    return ret_chunk;
 }
 
 void* brkman_realloc(void* ptr, size_t size)
