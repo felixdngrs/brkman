@@ -57,3 +57,4 @@ dkms.conf
 # vim files
 .*.swp
 .*.swo
+.*.swn
