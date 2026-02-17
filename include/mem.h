@@ -25,6 +25,25 @@
  */
 bool heap_extend(void) __attribute__((warn_unused_result));
 
+/**
+ * @brief Shrinks the heap by the specified number of bytes.
+ *
+ * Attempts to reduce the program's heap size by moving the program break
+ * downwards by the given number of bytes. This function uses the system
+ * call `sbrk()` to adjust the heap size.
+ *
+ * @param mbytes The number of bytes by which to shrink the heap.
+ * @return true  If the heap was successfully shrunk.
+ * @return false If the operation failed (e.g., not enough memory to shrink,
+ *               or the system call returned an error).
+ */
+bool heap_shrink(size_t mbytes) __attribute__((warn_unused_result));
+
+#ifdef DEBUG
+
+bool brkman_heap_reset();
+#endif
+
 brkman_chunk_t* brkman_mem_alloc(size_t membytes)
     __attribute__((warn_unused_result));
 

@@ -14,6 +14,7 @@ typedef struct brkman_chunk_t
 
 typedef struct brkman_heap_t
 {
+    void* initial_break;
     void* program_break;
     size_t free_mem_bytes;
     brkman_chunk_t* free;
@@ -112,5 +113,16 @@ size_t brkman_get_free_bytes();
  */
 brkman_chunk_t* brkman_search_free(size_t minsize)
     __attribute__((warn_unused_result));
+
+/**
+ * @brief Gets the current size of the heap in bytes.
+ *
+ * This function calculates the difference between the current program break
+ * and the initial break address, effectively returning the total heap size
+ * allocated by the memory manager.
+ *
+ * @return ptrdiff_t The size of the heap in bytes.
+ */
+ptrdiff_t brkman_get_heap_size();
 
 #endif

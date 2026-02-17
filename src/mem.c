@@ -3,6 +3,28 @@
 #include "heap.h"
 #include <stdio.h>
 
+bool heap_shrink(size_t mbytes)
+{
+    void* shrink_res = sbrk((intptr_t) -mbytes);
+    if ((void*) -1 == shrink_res)
+    {
+        return false;
+    }
+    brkman_set_program_break(shrink_res);
+    return true;
+}
+
+#ifdef DEBUG
+
+bool brkman_heap_reset()
+{
+    const ptrdiff_t heap_size = brkman_get_heap_size();
+    bool shrink_status = heap_shrink((size_t) heap_size);
+    return shrink_status;
+}
+
+#endif
+
 bool heap_extend()
 {
     void* old_break = sbrk((intptr_t) BRKMAN_HEAP_EXT_SIZE);

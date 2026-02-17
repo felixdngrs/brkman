@@ -1,7 +1,10 @@
 #include "heap.h"
 #include <stdio.h>
 
-static brkman_heap_t _heap;
+static brkman_heap_t _heap = {.initial_break = NULL,
+                              .program_break = NULL,
+                              .free_mem_bytes = 0,
+                              .free = NULL};
 
 ptrdiff_t brkman_cmp_chunks(const brkman_chunk_t* const a,
                             const brkman_chunk_t* const b)
@@ -225,4 +228,10 @@ brkman_chunk_t* brkman_merge_chunks(brkman_chunk_t* restrict chunk1,
 
     chunk1->size += chunk2->size;
     return chunk1;
+}
+
+ptrdiff_t brkman_get_heap_size()
+{
+    ptrdiff_t diff = (char*) _heap.program_break - (char*) _heap.initial_break;
+    return diff;
 }
