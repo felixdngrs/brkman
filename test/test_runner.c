@@ -1,5 +1,6 @@
-#include "brkman.h"
 #include "test_runner.h"
+#include "brkman.h"
+#include "mem.h" /* for heap reset */
 #include <stdio.h>
 
 bool test_alloc_01(void)
@@ -91,6 +92,7 @@ bool test_runner()
             current_test_result->result = TEST_RESULT_FAILURE;
         }
     }
+    return success;
 }
 
 void print_test_results(void)
@@ -113,6 +115,13 @@ void print_test_results(void)
         }
         fprintf(stderr, "%16s - \"%s\"\n", current_test_case->name,
                 current_test_case->descr);
+        bool heap_reset_status = brkman_heap_reset();
+        if (!heap_reset_status)
+        {
+            fprintf(
+                stderr,
+                "\033[35m\t --> failed to reset heap after test case\033[0m\n");
+        }
     }
 }
 
