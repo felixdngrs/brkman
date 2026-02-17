@@ -1,5 +1,7 @@
+DEBUG ?= 0
+
 CC			=	gcc
-CFLAGS		=	-Werror -g -Wpedantic -Wall -Wextra -fPIC -std=c99 -D_DEFAULT_SOURCE
+CFLAGS		=	-Werror -Wpedantic -Wall -Wextra -fPIC -std=c99 -D_DEFAULT_SOURCE
 CPPFLAGS	=	-Iinclude
 
 AR				=	ar
@@ -25,6 +27,10 @@ CLANG_TIDY_FILE		=	.clang-tidy
 CLANG_FORMAT		=	clang-format
 CLANG_FORMAT_FILE	=	.clang-format
 
+ifeq ($(DEBUG), 1)
+	CFLAGS		+= -g -DDEBUG
+	CPPFLAGS	+= -g
+endif
 
 .PHONY: all cleanbuild clean tidy format build-tests
 
