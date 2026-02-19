@@ -2,9 +2,8 @@
 
 void* brkman_alloc(size_t size)
 {
-    /* TEST! we will return the full chunk for now (with header) */
-    brkman_chunk_t* ret_chunk = brkman_mem_alloc(size);
-    return ret_chunk;
+    void* ret_mem = brkman_mem_alloc(size);
+    return ret_mem;
 }
 
 void* brkman_realloc(void* ptr, size_t size)

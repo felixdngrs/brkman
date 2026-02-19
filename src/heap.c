@@ -2,7 +2,6 @@
 #include <stdio.h>
 
 static brkman_heap_t _heap = {.initial_break = NULL,
-                              .program_break = NULL,
                               .free_mem_bytes = 0,
                               .free = NULL};
 
@@ -16,6 +15,16 @@ ptrdiff_t brkman_cmp_chunks(const brkman_chunk_t* const a,
 size_t brkman_get_free_bytes()
 {
     return _heap.free_mem_bytes;
+}
+
+void* brkman_heap_payload_of(brkman_chunk_t* chunk)
+{
+    void* usable = NULL;
+    if (chunk)
+    {
+        usable = (char*) chunk + BRKMAN_CHUNK_HEADER_SIZE;
+    }
+    return usable;
 }
 
 bool brkman_reclaim_chunk(brkman_chunk_t* chunk)
@@ -153,11 +162,6 @@ brkman_chunk_t* brkman_search_free(size_t minsize)
     return ret_chunk;
 }
 
-void brkman_set_program_break(void* const nbrk)
-{
-    _heap.program_break = nbrk;
-}
-
 brkman_chunk_t* brkman_split_chunk(brkman_chunk_t* chunk, size_t msize)
 {
     if (!chunk)
@@ -230,8 +234,19 @@ brkman_chunk_t* brkman_merge_chunks(brkman_chunk_t* restrict chunk1,
     return chunk1;
 }
 
+char* brkman_get_initial_break()
+{
+    if (NULL == _heap.initial_break)
+    {
+        _heap.initial_break = sbrk(0);
+    }
+    return _heap.initial_break;
+}
+
 ptrdiff_t brkman_get_heap_size()
 {
-    ptrdiff_t diff = (char*) _heap.program_break - (char*) _heap.initial_break;
+    char* program_break = sbrk(0);
+    char* initial_break = brkman_get_initial_break();
+    ptrdiff_t diff = program_break - initial_break;
     return diff;
 }

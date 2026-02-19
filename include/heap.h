@@ -4,6 +4,7 @@
 #include "attributes.h"
 #include <stdbool.h>
 #include <stddef.h>
+#include <unistd.h>
 
 typedef struct brkman_chunk_t
 {
@@ -15,7 +16,6 @@ typedef struct brkman_chunk_t
 typedef struct brkman_heap_t
 {
     void* initial_break;
-    void* program_break;
     size_t free_mem_bytes;
     brkman_chunk_t* free;
 } brkman_heap_t;
@@ -27,17 +27,6 @@ brkman_chunk_t* brkman_detach_chunk(brkman_chunk_t* chunk)
     __attribute__((warn_unused_result));
 bool brkman_chunk_mark_free(brkman_chunk_t* newchunk)
     __attribute__((warn_unused_result));
-
-/**
- * @brief Sets the program break pointer used by the heap manager.
- *
- * This function updates the internal program break value, which represents
- * the current end of the heap. It does not perform any memory allocation
- * or validation; it simply assigns the provided address.
- *
- * @param nbrk Pointer to the new program break address.
- */
-void brkman_set_program_break(void* const nbrk);
 
 /**
  * @brief Splits a free memory chunk into two parts if possible.
@@ -124,5 +113,38 @@ brkman_chunk_t* brkman_search_free(size_t minsize)
  * @return ptrdiff_t The size of the heap in bytes.
  */
 ptrdiff_t brkman_get_heap_size();
+
+/**
+ * @brief Returns the initial program break of the heap.
+ *
+ * This function retrieves the initial program break using sbrk(0)
+ * and stores it internally on first invocation. Subsequent calls
+ * return the cached value.
+ *
+ * @return A pointer to the initial program break.
+ * @retval NULL If the program break could not be determined.
+ */
+char* brkman_get_initial_break();
+
+/**
+ * @brief Returns the user-accessible memory region of a heap chunk.
+ *
+ * This function extracts the usable payload area from a given heap chunk.
+ * Each chunk contains an internal header (metadata) at the beginning
+ * that must not be exposed to the user. The function therefore returns
+ * a pointer to the memory region immediately following the chunk header.
+ *
+ * Internally, this is implemented by adding the size of the chunk header
+ * to the base address of the chunk.
+ *
+ * @param chunk Pointer to the heap chunk structure.
+ *
+ * @return Pointer to the beginning of the user-accessible memory area
+ *         (i.e., the payload region). Returns NULL if @p chunk is NULL.
+ *
+ * @note The returned pointer must be treated as opaque user memory.
+ *       Accessing memory before this pointer may corrupt allocator metadata.
+ */
+void* brkman_heap_payload_of(brkman_chunk_t* chunk);
 
 #endif

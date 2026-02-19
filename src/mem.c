@@ -10,7 +10,6 @@ bool heap_shrink(size_t mbytes)
     {
         return false;
     }
-    brkman_set_program_break(shrink_res);
     return true;
 }
 
@@ -32,12 +31,11 @@ bool heap_extend()
     {
         return false;
     }
-    void* const new_program_break =
-        (unsigned char*) old_break + BRKMAN_HEAP_EXT_SIZE;
+    char* const new_program_break = sbrk(0);
 
     /* create a new chunk from the extended heap block */
     brkman_chunk_t* new_chunk =
-        (brkman_chunk_t*) ((char*) new_program_break - BRKMAN_HEAP_EXT_SIZE);
+        (brkman_chunk_t*) (new_program_break - BRKMAN_HEAP_EXT_SIZE);
 
     new_chunk->size = BRKMAN_HEAP_EXT_SIZE - BRKMAN_CHUNK_HEADER_SIZE;
 
@@ -58,12 +56,13 @@ bool heap_extend()
     /* TODO: mem.c ; merge chunks in heap_extend() (all chunks or at least the
      * last two) */
 
-    brkman_set_program_break(new_program_break);
+    /* here we set the initial break, if not happened yet */
+    (void) brkman_get_initial_break();
 
     return true;
 }
 
-brkman_chunk_t* brkman_mem_alloc(size_t membytes)
+void* brkman_mem_alloc(size_t membytes)
 {
     brkman_chunk_t* ret_chunk = NULL;
 
@@ -94,5 +93,8 @@ brkman_chunk_t* brkman_mem_alloc(size_t membytes)
     }
 
     ret_chunk = brkman_search_free(membytes);
-    return ret_chunk;
+
+    void* ret_mem = brkman_heap_payload_of(ret_chunk);
+
+    return ret_mem;
 }

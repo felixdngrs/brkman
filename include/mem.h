@@ -44,7 +44,6 @@ bool heap_shrink(size_t mbytes) __attribute__((warn_unused_result));
 bool brkman_heap_reset();
 #endif
 
-brkman_chunk_t* brkman_mem_alloc(size_t membytes)
-    __attribute__((warn_unused_result));
+void* brkman_mem_alloc(size_t membytes) __attribute__((warn_unused_result));
 
 #endif
