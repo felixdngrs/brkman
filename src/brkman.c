@@ -22,5 +22,5 @@ void* brkman_calloc(size_t nmemb, size_t size)
 
 void brkman_free(void* ptr)
 {
-    UNUSED(ptr);
+    brkman_mem_free(ptr);
 }
