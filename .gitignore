@@ -58,3 +58,6 @@ dkms.conf
 .*.swp
 .*.swo
 .*.swn
+
+
+tags
