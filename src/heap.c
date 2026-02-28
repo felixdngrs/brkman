@@ -1,5 +1,4 @@
 #include "heap.h"
-#include <stdio.h>
 
 static brkman_heap_t _heap = {.initial_break = NULL,
                               .free_mem_bytes = 0,
@@ -16,6 +15,31 @@ size_t brkman_get_free_bytes()
 {
     return _heap.free_mem_bytes;
 }
+
+#ifdef DEBUG
+const brkman_chunk_t* brkman_heap_header_of(const void* payload)
+{
+    if (NULL == payload)
+    {
+        return NULL;
+    }
+    brkman_chunk_t* header =
+        (brkman_chunk_t*) ((char*) payload - BRKMAN_CHUNK_HEADER_SIZE);
+    return header;
+}
+
+const brkman_heap_t* brkman_heap_ref()
+{
+    return &_heap;
+}
+
+void brkman_heap_reset_size()
+{
+    _heap.initial_break = NULL;
+    _heap.free = NULL;
+    _heap.free_mem_bytes = 0;
+}
+#endif
 
 void* brkman_heap_payload_of(brkman_chunk_t* chunk)
 {

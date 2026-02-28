@@ -150,4 +150,59 @@ char* brkman_get_initial_break();
  */
 void* brkman_heap_payload_of(brkman_chunk_t* chunk);
 
+#ifdef DEBUG
+/**
+ * @brief Returns the heap chunk structure associated with a user payload
+ * pointer.
+ *
+ * This function reconstructs the internal heap chunk metadata structure
+ * from a pointer to the user-accessible memory region (payload).
+ * Since the allocator stores a chunk header directly before the payload,
+ * the function computes the address of the chunk by subtracting the
+ * size of the chunk header from the given payload pointer.
+ *
+ * Internally, this is implemented by subtracting sizeof(brkman_chunk_t)
+ * from the payload address.
+ *
+ * @param payload Pointer to the beginning of the user-accessible memory
+ *                region (as previously returned by the allocator).
+ *
+ * @return Pointer to the corresponding heap chunk structure.
+ *         Returns NULL if @p payload is NULL.
+ *
+ * @note The payload pointer must originate from this allocator.
+ *       Passing arbitrary or invalid pointers results in undefined behavior.
+ *
+ * @warning Accessing or modifying the returned chunk directly may
+ *          corrupt allocator metadata and should only be done internally.
+ */
+const brkman_chunk_t* brkman_heap_header_of(const void* payload);
+
+/**
+ * @brief Returns a read-only reference to the global heap.
+ *
+ * This function provides access to the internal global heap structure
+ * used by the allocator. It is intended for debugging and inspection
+ * purposes only, allowing external code (e.g., tests or diagnostics)
+ * to read allocator metadata without modifying it.
+ *
+ * @return pointer to the global heap structure.
+ *
+ * @note This function is only available in DEBUG mode.
+ *       It must not be exposed in release builds, as external access
+ *       to allocator metadata could compromise heap integrity.
+ */
+const brkman_heap_t* brkman_heap_ref(void);
+
+/**
+ * @brief Sets the internal value for free memory bytes to zero.
+ *
+ * This function sets the internal value for free memory bytes to zero.
+ *
+ * @note This function is only available in DEBUG mode, as the heap manages his
+ * metadate by itself in release mode.
+ */
+void brkman_heap_reset_size(void);
+#endif
+
 #endif
