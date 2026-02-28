@@ -27,7 +27,7 @@ void* brkman_heap_payload_of(brkman_chunk_t* chunk)
     return usable;
 }
 
-bool brkman_reclaim_chunk(brkman_chunk_t* chunk)
+bool brkman_claim_chunk(brkman_chunk_t* chunk)
 {
     if (!chunk)
     {

@@ -103,6 +103,9 @@ size_t brkman_get_free_bytes();
 brkman_chunk_t* brkman_search_free(size_t minsize)
     __attribute__((warn_unused_result));
 
+bool brkman_claim_chunk(brkman_chunk_t* chunk)
+    __attribute__((warn_unused_result));
+
 /**
  * @brief Gets the current size of the heap in bytes.
  *
