@@ -2,6 +2,7 @@
 #include "attributes.h"
 #include "heap.h"
 #include <stdio.h>
+#include <sys/resource.h>
 
 bool heap_shrink(size_t mbytes)
 {
@@ -19,6 +20,7 @@ bool brkman_heap_reset()
 {
     const ptrdiff_t heap_size = brkman_get_heap_size();
     bool shrink_status = heap_shrink((size_t) heap_size);
+    brkman_heap_reset_size();
     return shrink_status;
 }
 
@@ -66,6 +68,26 @@ void* brkman_mem_alloc(size_t membytes)
 {
     brkman_chunk_t* ret_chunk = NULL;
 
+    /* we always need to add the header size (because the chunk always has a
+     * header) */
+    if (__builtin_add_overflow(membytes, BRKMAN_CHUNK_HEADER_SIZE, &membytes))
+    {
+        /* overflow */
+        return NULL;
+    }
+
+    struct rlimit rlim;
+
+    if (getrlimit(RLIMIT_DATA, &rlim) < 0)
+    {
+        return NULL;
+    }
+
+    if (membytes >= rlim.rlim_cur)
+    {
+        return NULL;
+    }
+
     if (membytes < BRKMAN_MIN_CHUNK_SIZE)
     {
         membytes = BRKMAN_MIN_CHUNK_SIZE;
@@ -94,7 +116,24 @@ void* brkman_mem_alloc(size_t membytes)
 
     ret_chunk = brkman_search_free(membytes);
 
+    if (!brkman_claim_chunk(ret_chunk))
+    {
+        return NULL;
+    }
+
     void* ret_mem = brkman_heap_payload_of(ret_chunk);
 
     return ret_mem;
+}
+
+void brkman_mem_free(void* payload)
+{
+    if (NULL != payload)
+    {
+        brkman_chunk_t* chunk =
+            (brkman_chunk_t*) ((char*) payload - BRKMAN_CHUNK_HEADER_SIZE);
+        bool free_status = brkman_chunk_mark_free(chunk);
+        UNUSED(free_status);
+    }
+    /* noop */
 }
