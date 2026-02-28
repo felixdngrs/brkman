@@ -27,7 +27,7 @@ TEST_INC	= test
 TEST_SRCS	= $(wildcard $(TEST_SRC)/*.c)
 TEST_INCS	= $(wildcard $(TEST_INC)/*.h)
 TEST_OBJS	= $(TEST_SRCS:.c=.o)
-TEST_PROG	= $(TEST_SRC)/test_prog
+TEST_PROG	= $(TEST_SRC)/test_prog.out
 
 CLANG_TIDY			=	clang-tidy
 CLANG_TIDY_FILE		=	.clang-tidy
