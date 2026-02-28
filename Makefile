@@ -8,6 +8,13 @@ AR				=	ar
 LDFLAGS			=	-shared 
 LIBNAME			=	brkman
 
+RM				=	rm
+RM_OPTS			= 	-f -v 	
+
+CTAGS			=	ctags
+CTAGS_OPTS		=	-R --sort=yes 
+CTAGS_TARGET	=	.
+
 SRC		=	src
 INC		=	include
 TARGET	=	brkman
@@ -28,11 +35,11 @@ CLANG_FORMAT		=	clang-format
 CLANG_FORMAT_FILE	=	.clang-format
 
 ifeq ($(DEBUG), 1)
-	CFLAGS		+= -g -DDEBUG
+	CFLAGS		+= -g -fno-omit-frame-pointer -O0 -fsanitize=address -DDEBUG
 	CPPFLAGS	+= -g
 endif
 
-.PHONY: all cleanbuild clean tidy format build-tests
+.PHONY: all cleanbuild clean tidy format build-tests tags
 
 all: lib$(LIBNAME).so lib$(LIBNAME).a
 
@@ -51,8 +58,11 @@ lib$(LIBNAME).so: $(OBJS)
 lib$(LIBNAME).a: $(OBJS)
 	@$(AR) rcs $@ $^
 
-build-tests:
+build-tests: all
 	@$(CC) $(CFLAGS) $(CPPFLAGS) -o $(TEST_PROG) $(TEST_SRCS) $(TEST_INCS) -L. -lbrkman
 
+tags:
+	@$(CTAGS) $(CTAGS_OPTS) $(CTAGS_TARGET)
+
 clean:
-	@rm $(SRC)/*.o *.so *.a $(TEST_SRC)/*.o $(TEST_PROG) 
+	@$(RM) $(RM_OPTS) $(SRC)/*.o *.so *.a $(TEST_SRC)/*.o $(TEST_PROG) 
