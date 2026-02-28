@@ -46,4 +46,25 @@ bool brkman_heap_reset();
 
 void* brkman_mem_alloc(size_t membytes) __attribute__((warn_unused_result));
 
+/**
+ * @brief Frees a memory block previously allocated by brkman_mem_alloc.
+ *
+ * This function releases a memory region that was previously allocated
+ * by the brkman memory manager. The pointer passed to this function
+ * must be exactly the same pointer returned by brkman_mem_alloc().
+ *
+ * Internally, the function calculates the address of the chunk header
+ * located before the user-accessible memory area and marks the chunk
+ * as free.
+ *
+ * @param chunk Pointer to the memory block to be freed.
+ *
+ * @note If NULL is passed, the function should perform no operation,
+ *       similar to the standard C free() behavior.
+ *
+ * @warning Passing an invalid pointer or freeing an already freed
+ *          block results in undefined behavior.
+ *
+ */
+void brkman_mem_free(void* payload);
 #endif
