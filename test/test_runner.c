@@ -76,6 +76,33 @@ bool test_alloc_04(const char** reterr_msg)
     return false;
 }
 
+bool test_alloc_05(const char **reterr_msg)
+{
+    const size_t iterations = 100;
+    const size_t mbytes = 1024;
+
+    for(size_t run = 0; run < iterations; ++run)
+    {
+        const void* ptr = brkman_alloc(mbytes);
+
+        if (NULL == ptr)
+        {
+            RETERR_MSG(TEST_ERR_ALLOC_RET_NULL);
+            return false;
+        }
+
+        const brkman_chunk_t* header = brkman_heap_header_of(ptr);
+
+        const bool memory_allocated = header->size >= mbytes;
+        if(!memory_allocated)
+        {
+            RETERR_MSG(TEST_ERR_ALLOC_TOOSMALL);
+            return false;
+        }
+    }
+    return true;
+}
+
 bool test_free_01(const char** reterr_msg)
 {
     const size_t mbytes = 1024;

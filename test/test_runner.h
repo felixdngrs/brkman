@@ -30,6 +30,7 @@ typedef enum test_id_e
     TEST_ALLOC_02,
     TEST_ALLOC_03,
     TEST_ALLOC_04,
+    TEST_ALLOC_05,
     TEST_FREE_01,
     TEST_FREE_02,
     _TEST_MAX
