@@ -25,6 +25,10 @@ bool test_alloc_01(const char** reterr_msg)
     const brkman_chunk_t* header = brkman_heap_header_of(ptr);
 
     const bool memory_allocated = header->size >= mbytes;
+    if(!memory_allocated)
+    {
+        RETERR_MSG(TEST_ERR_ALLOC_TOOSMALL);
+    }
 
     return memory_allocated;
 }
@@ -43,6 +47,10 @@ bool test_alloc_02(const char** reterr_msg)
     const brkman_chunk_t* header = brkman_heap_header_of(ptr);
 
     const bool memory_allocated = header->size >= mbytes;
+    if(!memory_allocated)
+    {
+        RETERR_MSG(TEST_ERR_ALLOC_TOOSMALL);
+    }
 
     return memory_allocated;
 }
@@ -153,25 +161,51 @@ bool test_free_02(const char** reterr_msg)
 }
 
 test_case_t test_list[_TEST_MAX] = {
-    {"TEST_ALLOC_01",
-     "A simple valid allocation in which we try to allocate a small amount of "
-     "memory",
-     test_alloc_01},
-    {"TEST_ALLOC_02",
-     "A simple valid allocation in which we try to allocate a big amount of "
-     "memory",
-     test_alloc_02},
-    {"TEST_ALLOC_03",
-     "Here we try to allocate an enormous amount of memory to check the "
-     "overflow behaviour.",
-     test_alloc_03},
-    {"TEST_ALLOC_04",
-     "Here we try to allocate an enormous amount of memory to "
-     "push the heap limits.",
-     test_alloc_04},
-    {"TEST_FREE_01", "We allocate some memory and try to free it immediately",
-     test_free_01},
-    {"TEST_FREE_02", "We try to call free with a NULL pointer", test_free_02},
+    {
+        TEST_CASE_INACTIVE,
+        "TEST_ALLOC_01",
+        "A simple valid allocation in which we try to allocate a small amount of "
+        "memory",
+        test_alloc_01
+    },
+    {
+        TEST_CASE_INACTIVE,
+        "TEST_ALLOC_02",
+        "A simple valid allocation in which we try to allocate a big amount of "
+        "memory",
+        test_alloc_02
+    },
+    {
+        TEST_CASE_INACTIVE,
+        "TEST_ALLOC_03",
+        "Here we try to allocate an enormous amount of memory to check the "
+        "overflow behaviour.",
+        test_alloc_03
+    },
+    {
+        TEST_CASE_INACTIVE,
+        "TEST_ALLOC_04",
+        "Here we try to allocate an enormous amount of memory to "
+        "push the heap limits.",
+        test_alloc_04
+    },
+    {
+        TEST_CASE_ACTIVE,
+        "TEST_ALLOC_05",
+        "Here we try to allocate a big amount of memory 100 times to check how the allocator handles multiple allocations.",
+        test_alloc_05
+    },
+    {
+        TEST_CASE_INACTIVE,
+        "TEST_FREE_01", "We allocate some memory and try to free it immediately",
+        test_free_01
+    },
+    {
+        TEST_CASE_INACTIVE,
+        "TEST_FREE_02", 
+        "We try to call free with a NULL pointer", 
+        test_free_02
+    },
 };
 
 test_result_t test_results[_TEST_MAX];
@@ -199,25 +233,30 @@ bool test_runner()
         /* save ref to current test case in test result */
         current_test_result->test_case = current_test_case;
 
-        bool test_success =
-            (current_test_case->func)(current_test_result_errreason);
-        if (test_success)
+
+        if(current_test_case->active)
         {
-            current_test_result->result = TEST_RESULT_SUCCESS;
-        }
-        else
-        {
-            success = false;
-            current_test_result->result = TEST_RESULT_FAILURE;
-            fprintf(stderr, "current_test_result->reason: %s\n",
-                    current_test_result->reason);
-        }
-        bool heap_reset_status = brkman_heap_reset();
-        if (!heap_reset_status)
-        {
-            fprintf(
-                stderr,
-                "\033[35m\t --> failed to reset heap after test case\033[0m\n");
+            /* skip inactive test case */
+            bool test_success =
+                (current_test_case->func)(current_test_result_errreason);
+            if (test_success)
+            {
+                current_test_result->result = TEST_RESULT_SUCCESS;
+            }
+            else
+            {
+                success = false;
+                current_test_result->result = TEST_RESULT_FAILURE;
+                fprintf(stderr, "current_test_result->reason: %s\n",
+                        current_test_result->reason);
+            }
+            bool heap_reset_status = brkman_heap_reset();
+            if (!heap_reset_status)
+            {
+                fprintf(
+                    stderr,
+                    "\033[35m\t --> failed to reset heap after test case\033[0m\n");
+            }
         }
     }
     return success;
@@ -233,7 +272,7 @@ void print_test_results(void)
 
         if (current_test_result->result == TEST_RESULT_UNKNOWN)
         {
-            fprintf(stdout, "\033[34m[NOT RUN]\033[0m\t");
+            fprintf(stderr, "\033[34m[NOT RUN]\033[0m\t");
         }
         else if (current_test_result->result == TEST_RESULT_FAILURE)
         {
