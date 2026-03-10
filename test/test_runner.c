@@ -162,28 +162,28 @@ bool test_free_02(const char** reterr_msg)
 
 test_case_t test_list[_TEST_MAX] = {
     {
-        TEST_CASE_INACTIVE,
+        TEST_CASE_ACTIVE,
         "TEST_ALLOC_01",
         "A simple valid allocation in which we try to allocate a small amount of "
         "memory",
         test_alloc_01
     },
     {
-        TEST_CASE_INACTIVE,
+        TEST_CASE_ACTIVE,
         "TEST_ALLOC_02",
         "A simple valid allocation in which we try to allocate a big amount of "
         "memory",
         test_alloc_02
     },
     {
-        TEST_CASE_INACTIVE,
+        TEST_CASE_ACTIVE,
         "TEST_ALLOC_03",
         "Here we try to allocate an enormous amount of memory to check the "
         "overflow behaviour.",
         test_alloc_03
     },
     {
-        TEST_CASE_INACTIVE,
+        TEST_CASE_ACTIVE,
         "TEST_ALLOC_04",
         "Here we try to allocate an enormous amount of memory to "
         "push the heap limits.",
@@ -196,12 +196,12 @@ test_case_t test_list[_TEST_MAX] = {
         test_alloc_05
     },
     {
-        TEST_CASE_INACTIVE,
+        TEST_CASE_ACTIVE,
         "TEST_FREE_01", "We allocate some memory and try to free it immediately",
         test_free_01
     },
     {
-        TEST_CASE_INACTIVE,
+        TEST_CASE_ACTIVE,
         "TEST_FREE_02", 
         "We try to call free with a NULL pointer", 
         test_free_02
