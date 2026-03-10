@@ -39,7 +39,7 @@ bool heap_extend()
     brkman_chunk_t* new_chunk =
         (brkman_chunk_t*) (new_program_break - BRKMAN_HEAP_EXT_SIZE);
 
-    new_chunk->size = BRKMAN_HEAP_EXT_SIZE - BRKMAN_CHUNK_HEADER_SIZE;
+    new_chunk->size = BRKMAN_HEAP_EXT_SIZE;
 
     if (!brkman_chunk_mark_free(new_chunk))
     {
