@@ -2,6 +2,7 @@
 #include "brkman.h"
 #include "heap.h" /* for analyzing chunk and heap metadata*/
 #include "mem.h"  /* for heap reset */
+#include <stdlib.h>
 #include <stdio.h>
 
 const char* test_errmsgs[TEST_ERR_MSG_MAX] = {
@@ -296,5 +297,10 @@ int main(void)
 {
     bool all_tests_successful = test_runner();
     print_test_results();
-    return (int) (all_tests_successful);
+    
+    if(all_tests_successful)
+    {
+        return EXIT_SUCCESS;
+    }
+    return EXIT_FAILURE;
 }
