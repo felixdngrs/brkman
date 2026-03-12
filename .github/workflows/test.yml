@@ -1,0 +1,28 @@
+name: Run tests
+
+on:
+  push:
+    branches: ["main", "develop"]
+  pull_request:
+    branches: ["main", "develop"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: build tests
+        run: make build-tests DEBUG=1
+
+      - name: make tests executable
+        run: chmod +x test/test_prog.out
+
+      - name: Copy library to standard path
+        run: sudo cp libbrkman.so /usr/local/lib/
+
+      - name: Update library cache
+        run: sudo ldconfig
+
+      - name: Run tests
+        run: ./test/test_prog.out
