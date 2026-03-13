@@ -2,8 +2,8 @@
 #include "brkman.h"
 #include "heap.h" /* for analyzing chunk and heap metadata*/
 #include "mem.h"  /* for heap reset */
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 const char* test_errmsgs[TEST_ERR_MSG_MAX] = {
     [TEST_ERR_ALLOC_RET_NULL] = "ALLOC_RET_NULL",
@@ -26,7 +26,7 @@ bool test_alloc_01(const char** reterr_msg)
     const brkman_chunk_t* header = brkman_heap_header_of(ptr);
 
     const bool memory_allocated = header->size >= mbytes;
-    if(!memory_allocated)
+    if (!memory_allocated)
     {
         RETERR_MSG(TEST_ERR_ALLOC_TOOSMALL);
     }
@@ -48,7 +48,7 @@ bool test_alloc_02(const char** reterr_msg)
     const brkman_chunk_t* header = brkman_heap_header_of(ptr);
 
     const bool memory_allocated = header->size >= mbytes;
-    if(!memory_allocated)
+    if (!memory_allocated)
     {
         RETERR_MSG(TEST_ERR_ALLOC_TOOSMALL);
     }
@@ -85,12 +85,12 @@ bool test_alloc_04(const char** reterr_msg)
     return false;
 }
 
-bool test_alloc_05(const char **reterr_msg)
+bool test_alloc_05(const char** reterr_msg)
 {
     const size_t iterations = 100;
     const size_t mbytes = 1024;
 
-    for(size_t run = 0; run < iterations; ++run)
+    for (size_t run = 0; run < iterations; ++run)
     {
         const void* ptr = brkman_alloc(mbytes);
 
@@ -103,7 +103,7 @@ bool test_alloc_05(const char **reterr_msg)
         const brkman_chunk_t* header = brkman_heap_header_of(ptr);
 
         const bool memory_allocated = header->size >= mbytes;
-        if(!memory_allocated)
+        if (!memory_allocated)
         {
             RETERR_MSG(TEST_ERR_ALLOC_TOOSMALL);
             return false;
@@ -162,51 +162,30 @@ bool test_free_02(const char** reterr_msg)
 }
 
 test_case_t test_list[_TEST_MAX] = {
-    {
-        TEST_CASE_ACTIVE,
-        "TEST_ALLOC_01",
-        "A simple valid allocation in which we try to allocate a small amount of "
-        "memory",
-        test_alloc_01
-    },
-    {
-        TEST_CASE_ACTIVE,
-        "TEST_ALLOC_02",
-        "A simple valid allocation in which we try to allocate a big amount of "
-        "memory",
-        test_alloc_02
-    },
-    {
-        TEST_CASE_ACTIVE,
-        "TEST_ALLOC_03",
-        "Here we try to allocate an enormous amount of memory to check the "
-        "overflow behaviour.",
-        test_alloc_03
-    },
-    {
-        TEST_CASE_ACTIVE,
-        "TEST_ALLOC_04",
-        "Here we try to allocate an enormous amount of memory to "
-        "push the heap limits.",
-        test_alloc_04
-    },
-    {
-        TEST_CASE_ACTIVE,
-        "TEST_ALLOC_05",
-        "Here we try to allocate a big amount of memory 100 times to check how the allocator handles multiple allocations.",
-        test_alloc_05
-    },
-    {
-        TEST_CASE_ACTIVE,
-        "TEST_FREE_01", "We allocate some memory and try to free it immediately",
-        test_free_01
-    },
-    {
-        TEST_CASE_ACTIVE,
-        "TEST_FREE_02", 
-        "We try to call free with a NULL pointer", 
-        test_free_02
-    },
+    {TEST_CASE_ACTIVE, "TEST_ALLOC_01",
+     "A simple valid allocation in which we try to allocate a small amount of "
+     "memory",
+     test_alloc_01},
+    {TEST_CASE_ACTIVE, "TEST_ALLOC_02",
+     "A simple valid allocation in which we try to allocate a big amount of "
+     "memory",
+     test_alloc_02},
+    {TEST_CASE_ACTIVE, "TEST_ALLOC_03",
+     "Here we try to allocate an enormous amount of memory to check the "
+     "overflow behaviour.",
+     test_alloc_03},
+    {TEST_CASE_ACTIVE, "TEST_ALLOC_04",
+     "Here we try to allocate an enormous amount of memory to "
+     "push the heap limits.",
+     test_alloc_04},
+    {TEST_CASE_ACTIVE, "TEST_ALLOC_05",
+     "Here we try to allocate a big amount of memory 100 times to check how "
+     "the allocator handles multiple allocations.",
+     test_alloc_05},
+    {TEST_CASE_ACTIVE, "TEST_FREE_01",
+     "We allocate some memory and try to free it immediately", test_free_01},
+    {TEST_CASE_ACTIVE, "TEST_FREE_02",
+     "We try to call free with a NULL pointer", test_free_02},
 };
 
 test_result_t test_results[_TEST_MAX];
@@ -234,8 +213,7 @@ bool test_runner()
         /* save ref to current test case in test result */
         current_test_result->test_case = current_test_case;
 
-
-        if(current_test_case->active)
+        if (current_test_case->active)
         {
             /* skip inactive test case */
             bool test_success =
@@ -254,9 +232,8 @@ bool test_runner()
             bool heap_reset_status = brkman_heap_reset();
             if (!heap_reset_status)
             {
-                fprintf(
-                    stderr,
-                    "\033[35m\t --> failed to reset heap after test case\033[0m\n");
+                fprintf(stderr, "\033[35m\t --> failed to reset heap after "
+                                "test case\033[0m\n");
             }
         }
     }
@@ -297,8 +274,8 @@ int main(void)
 {
     bool all_tests_successful = test_runner();
     print_test_results();
-    
-    if(all_tests_successful)
+
+    if (all_tests_successful)
     {
         return EXIT_SUCCESS;
     }

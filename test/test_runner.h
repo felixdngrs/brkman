@@ -6,8 +6,8 @@
         *reterr_msg = test_errmsgs[id];                                        \
     } while (0)
 
-#define TEST_CASE_ACTIVE    true
-#define TEST_CASE_INACTIVE  false
+#define TEST_CASE_ACTIVE true
+#define TEST_CASE_INACTIVE false
 
 typedef enum test_errmsg_e
 {
@@ -61,10 +61,11 @@ typedef enum test_result_e
  */
 typedef struct test_case_t
 {
-    bool active;            /**< Specifies whether the test should be executed. */
+    bool active;       /**< Specifies whether the test should be executed. */
     const char* name;  /**< Short name/identifier of the test case. */
     const char* descr; /**< Detailed description of the test case. */
-    bool (*func)(const char**); /**< Function pointer to the test implementation. */
+    bool (*func)(
+        const char**); /**< Function pointer to the test implementation. */
 } test_case_t;
 
 /**
